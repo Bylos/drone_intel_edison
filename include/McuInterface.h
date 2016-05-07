@@ -118,6 +118,9 @@ private:
 	fvector_t accelCalibb; fvector_t accelCalibs;
 	fvector_t gyroCalib;
 	fvector_t magnetoCalibb; fvector_t magnetoCalibX; fvector_t magnetoCalibY; fvector_t magnetoCalibZ;
+
+	/*Vector for positions of sensor relative to gravity center*/
+	fvector_t sensorsPosition;
 };
 
 } /* namespace std */

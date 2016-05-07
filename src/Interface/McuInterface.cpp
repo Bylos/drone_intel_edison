@@ -100,6 +100,17 @@ McuInterface::McuInterface() {
 		magnCalibFile >> magnetoCalibZ.x >> magnetoCalibZ.y >> magnetoCalibZ.z;
 	}
 
+	/* Load position of sensors relative to gravity center */
+	std::ifstream sensorsToGravityCenterFile;
+	sensorsToGravityCenterFile.open("/etc/drone/sensorsPosition.txt");
+	if (!sensorsToGravityCenterFile.is_open()) {
+	    std::cout << "Failed to open sensors position file\n";
+	    sensorsPosition.x = 0.0f ; sensorsPosition.y = 0.0f ; sensorsPosition.z = 0.0f ;
+	} else {
+		sensorsToGravityCenterFile >> sensorsPosition.x >> sensorsPosition.y >> sensorsPosition.z;
+	}
+
+
 }
 
 int McuInterface::Run() {
@@ -128,13 +139,13 @@ int McuInterface::BytesAvailable() {
 }
 void McuInterface::StartTime() {
 	struct timespec time;
-	clock_gettime(CLOCK_REALTIME, &time);
+	clock_gettime(CLOCK_MONOTONIC_RAW, &time);
 	start_time = time.tv_sec*1000 + time.tv_nsec*0.000001;
 }
 
 unsigned long McuInterface::TimeElapsed() {
 	struct timespec time;
-	clock_gettime(CLOCK_REALTIME, &time);
+	clock_gettime(CLOCK_MONOTONIC_RAW, &time);
 	return time.tv_sec*1000 + time.tv_nsec*0.000001 - start_time;
 }
 
@@ -154,7 +165,7 @@ int McuInterface::Main() {
 
 	while(!quit) {
 		/* wait for 1ms to release thread from system */
-		nanosleep((const struct timespec[]){{0, 1000000L}}, NULL);
+		nanosleep((const struct timespec[]){{0, 100000L}}, NULL);
 		time = TimeElapsed();
 		/* get data from input buffer */
 		n = BytesAvailable();
@@ -317,7 +328,24 @@ InertialData McuInterface::GetInertialData() {
 			magnTempx * magnetoCalibY.x + magnTempy * magnetoCalibY.y + magnTempz * magnetoCalibY.z,
 			magnTempx * magnetoCalibZ.x + magnTempy * magnetoCalibZ.y + magnTempz * magnetoCalibZ.z);
 
-	Inertial.Set(Accelerometer, Gyroscope, Magnetometer);
+	/* exponential smoothing */
+	static AccelerometerSensorData newAcc;
+	newAcc.Set(
+			0.4*Accelerometer.GetX()+0.6*newAcc.GetX(),
+			0.4*Accelerometer.GetY()+0.6*newAcc.GetY(),
+			0.4*Accelerometer.GetZ()+0.6*newAcc.GetZ());
+	static GyroscopeSensorData newGyr;
+	newGyr.Set(
+			0.4*Gyroscope.GetX()+0.6*newGyr.GetX(),
+			0.4*Gyroscope.GetY()+0.6*newGyr.GetY(),
+			0.4*Gyroscope.GetZ()+0.6*newGyr.GetZ());
+	static MagnetometerSensorData newMag;
+	newMag.Set(
+			0.4*Magnetometer.GetX()+0.6*newMag.GetX(),
+			0.4*Magnetometer.GetY()+0.6*newMag.GetY(),
+			0.4*Magnetometer.GetZ()+0.6*newMag.GetZ());
+
+	Inertial.Set(newAcc, newGyr, newMag);
 
 	return Inertial;
 }

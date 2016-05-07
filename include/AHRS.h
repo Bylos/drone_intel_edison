@@ -76,6 +76,7 @@ int ahrs_init(InertialData data, ahrs_filter_t filter);
  */
 AttitudeData ahrs_orientation_update(InertialData data, ahrs_filter_t filter, float sdeltat);
 
+void beta_init(void);
 
 } /* namespace std */
 

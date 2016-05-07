@@ -20,7 +20,6 @@ AlexKidd2FlightMode::AlexKidd2FlightMode(McuInterface *mcu_int): FlightMode(mcu_
 }
 
 AlexKidd2FlightMode::~AlexKidd2FlightMode() {
-	// TODO Auto-generated destructor stub
 }
 
 void AlexKidd2FlightMode::init() {
@@ -38,7 +37,7 @@ int AlexKidd2FlightMode::RunMode() {
 
 	//Main loop of the mode
 	while(!quit) {
-		nanosleep((const struct timespec[]){{0, 000001000L}}, NULL); // 1us seems already enough
+		nanosleep((const struct timespec[]){{0, 000100000L}}, NULL); // 1us seems already enough
 
 		//Handle events sent by MCU
 		if (mcu_interface->GetEventFlag()) {

@@ -11,11 +11,9 @@
 namespace std {
 
 MagnetometerSensorData::MagnetometerSensorData():SensorData() {
-	// TODO Auto-generated constructor stub
 }
 
 MagnetometerSensorData::~MagnetometerSensorData() {
-	// TODO Auto-generated destructor stub
 }
 
 

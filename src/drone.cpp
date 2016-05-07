@@ -27,7 +27,6 @@ FlightMode * changeFlightMode(int newModeId, FlightMode *currentFlightMode) {
 	currentFlightMode = newFlightMode;
 	currentFlightMode->activate();
 
-	//TODO remettre l envoi vers les ESC
 	mcuInterface->SetMode(newModeId, 1);
 	return currentFlightMode;
 }
@@ -47,6 +46,7 @@ int main() {
 	nanosleep((const struct timespec[]){{2, 000000000L}}, NULL);
 
 
+	FILE* modelog = fopen("/etc/drone/log_mode.txt", "a");
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Main Loop
 	for(;;) {
@@ -55,6 +55,7 @@ int main() {
 		// Gestion des changements de modes
 		if (mcu_interface->GetCommandFlag()) {
 			int command = mcu_interface->GetCommand() ;
+			fprintf(modelog, "%8u command : %u\n", mcu_interface->TimeElapsed(), command);
 			// cout << "Drone : MCU Command " << command << endl;
 			switch (command) {
 

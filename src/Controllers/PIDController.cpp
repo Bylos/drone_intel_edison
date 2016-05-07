@@ -81,7 +81,9 @@ float PIDController::getControllerOutput(float currentValue, float targetValue, 
 	if(integral_<=0) integral_=max(integral_,-maxI_) ;
 	else integral_ = min(integral_,maxI_) ;
 
-	derivative_ = (err - lastErr_)/deltat ;
+	if (deltat > 0.001f) {									// Avoid division by zero in case of time lag, min is 1ms
+		derivative_ = (err - lastErr_)/deltat ;
+	}
 
 	outputValue = Kp_*err+Ki_*integral_+Kd_*derivative_ ;
 

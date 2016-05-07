@@ -17,7 +17,6 @@ JoystickData::JoystickData() {
 }
 
 JoystickData::~JoystickData() {
-	// TODO Auto-generated destructor stub
 }
 
 void JoystickData::Set(float LeftX, float LeftY, float RightX, float RightY) {

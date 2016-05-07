@@ -71,6 +71,7 @@ int StabilizedFlightMode::RunMode() {
 
 	//initialization of ahrs
 	cout << "AHRS initializing..." ;
+	beta_init();
 	while(ahrs_init(inertialData, IMUfilter) == 0) {
 		nanosleep((const struct timespec[]){{0, (int)(AHRS_INIT_UPDATE_PERIOD*1000000000)}}, NULL);
 		if (mcu_interface->GetInertialDataFlag()) {
@@ -81,7 +82,7 @@ int StabilizedFlightMode::RunMode() {
 
 	//Main loop of the mode
 	while(!quit) {
-		nanosleep((const struct timespec[]){{0, 1000000L}}, NULL);
+		nanosleep((const struct timespec[]){{0, 100000L}}, NULL);
 
 		//Update of time variables
 		currentTime = mcu_interface->TimeElapsed()/1000.0f;
@@ -97,7 +98,7 @@ int StabilizedFlightMode::RunMode() {
 			joystickData = mcu_interface->GetJoystickData();
 		}
 
-		//Handle IMU data sent by MCU and update PID ouputs
+		//Handle IMU data sent by MCU and update PID outputs
 		if (mcu_interface->GetInertialDataFlag()) {
 			inertialData = mcu_interface->GetInertialData();
 			gyro = inertialData.GetGyroscope();
@@ -110,15 +111,15 @@ int StabilizedFlightMode::RunMode() {
 			commonPower = 0.8*joystickData.GetRightY();
 
 			//roll PID update
-			targetRollRate = rollAnglePID.getControllerOutput(attitudeData.GetRoll(),joystickData.GetRightX(), sdeltat);
-			rollDifferentialPower 	= rollRatePID.getControllerOutput	( gyro.GetX(), targetRollRate, sdeltat);
+			targetRollRate = rollAnglePID.getControllerOutput(attitudeData.GetRoll(),0.45*joystickData.GetRightX(), sdeltat);
+			rollDifferentialPower 	= 0.0 * rollRatePID.getControllerOutput	( gyro.GetX(), targetRollRate, sdeltat);
 
 			//pitch PID update
-			targetPitchRate = pitchAnglePID.getControllerOutput(attitudeData.GetPitch(),-joystickData.GetLeftY(), sdeltat);
+			targetPitchRate = pitchAnglePID.getControllerOutput(attitudeData.GetPitch(),-0.45*joystickData.GetLeftY(), sdeltat);
 			pitchDifferentialPower 	= pitchRatePID.getControllerOutput	( gyro.GetY(), targetPitchRate, sdeltat);
 
 			//yaw PID update
-			yawDifferentialPower 	= yawRatePID.getControllerOutput	(  gyro.GetZ(), joystickData.GetLeftX(),sdeltat);
+			yawDifferentialPower 	= 0.0 * yawRatePID.getControllerOutput	(  gyro.GetZ(), joystickData.GetLeftX(),sdeltat);
 
 			/*
 			cout << min(max(commonPower+rollDifferentialPower+pitchDifferentialPower-yawDifferentialPower,10.0f),100.0f) << " " //Front left
@@ -135,7 +136,7 @@ int StabilizedFlightMode::RunMode() {
 					min(max(commonPower+rollDifferentialPower-pitchDifferentialPower+yawDifferentialPower,10.0f),100.0f)  //Back left
 					);
 
-			//TODO remettre l envoi vers les ESC
+			//Send commands to ESCs
 			mcu_interface->SetEsc(escData,1);
 
 			//last time is the current time

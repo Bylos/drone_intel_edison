@@ -18,7 +18,6 @@ StandbyFlightMode::StandbyFlightMode(McuInterface* mcu_int): FlightMode(mcu_int)
 }
 
 StandbyFlightMode::~StandbyFlightMode() {
-	// TODO Auto-generated destructor stub
 }
 
 void StandbyFlightMode::init() {
@@ -34,7 +33,7 @@ int StandbyFlightMode::RunMode() {
 	EscData escData;
 
 	while(!quit) {
-		nanosleep((const struct timespec[]){{0, 1000000L}}, NULL);
+		nanosleep((const struct timespec[]){{0, 100000L}}, NULL);
 
 		//Handle joystick/RC data sent by MCU
 		if (mcu_interface->GetJoystickDataFlag()) {

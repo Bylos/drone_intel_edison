@@ -22,7 +22,6 @@ AcrobaticFlightMode::AcrobaticFlightMode(McuInterface *mcu_int): FlightMode(mcu_
 }
 
 AcrobaticFlightMode::~AcrobaticFlightMode() {
-	// TODO Auto-generated destructor stub
 }
 
 void AcrobaticFlightMode::init() {
@@ -53,7 +52,6 @@ int AcrobaticFlightMode::RunMode() {
 	float pitchRateDifferentialPower = 0.0f ;
 	PIDController pitchRatePID = PIDController(0.13f, 0.3f, 0.003f, 2.0f) ; //TIPTOP
 
-
 	//Regulation variables for Roll rate
 	float rollRateDifferentialPower  = 0.0f ;
 	PIDController rollRatePID  = PIDController(0.18f, 0.3f, 0.003f, 2.0f) ; //TIPTOP
@@ -66,7 +64,7 @@ int AcrobaticFlightMode::RunMode() {
 
 	//Main loop of the mode
 	while(!quit) {
-		nanosleep((const struct timespec[]){{0, 1000000L}}, NULL); //Free the CPU for 1ms
+		nanosleep((const struct timespec[]){{0, 100000L}}, NULL); //Free the CPU for 1ms
 
 		//Update of time variables
 		currentTime = mcu_interface->TimeElapsed()/1000.0f;
@@ -93,13 +91,13 @@ int AcrobaticFlightMode::RunMode() {
 			commonPower = 0.8*joystickData.GetRightY();
 
 			//roll PID update
-			rollRateDifferentialPower 	= rollRatePID.getControllerOutput	(  gyro.GetX(), joystickData.GetRightX(),sdeltat);
+			rollRateDifferentialPower 	= 0.0 * rollRatePID.getControllerOutput	(  gyro.GetX(), joystickData.GetRightX(),sdeltat);
 
 			//pitch PID update
 			pitchRateDifferentialPower 	= pitchRatePID.getControllerOutput	(  gyro.GetY(), -joystickData.GetLeftY(),sdeltat);
 
 			//yaw PID update
-			yawRateDifferentialPower 	= yawRatePID.getControllerOutput	(  gyro.GetZ(), joystickData.GetLeftX(),sdeltat);
+			yawRateDifferentialPower 	= 0.0 * yawRatePID.getControllerOutput	(  gyro.GetZ(), joystickData.GetLeftX(),sdeltat);
 
 			/*
 			cout << (gyro.GetX()) << " " << (gyro.GetY()) << " " << (gyro.GetZ()) << " ";
@@ -118,7 +116,6 @@ int AcrobaticFlightMode::RunMode() {
 					min(max(commonPower+rollRateDifferentialPower-pitchRateDifferentialPower+yawRateDifferentialPower,10.0f),100.0f)  //Back left
 					);
 
-			//TODO remettre l envoi vers les ESC
 			mcu_interface->SetEsc(escData,1);
 
 			//last time is the current time

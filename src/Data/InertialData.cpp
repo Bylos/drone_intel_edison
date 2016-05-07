@@ -10,11 +10,9 @@
 namespace std {
 
 InertialData::InertialData() {
-	// TODO Auto-generated constructor stub
 }
 
 InertialData::~InertialData() {
-	// TODO Auto-generated destructor stub
 }
 
 void InertialData::Set(const AccelerometerSensorData &Accelerometer, const GyroscopeSensorData &Gyroscope, const MagnetometerSensorData &Magnetometer) {

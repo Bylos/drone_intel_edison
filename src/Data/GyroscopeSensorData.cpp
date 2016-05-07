@@ -10,12 +10,10 @@
 namespace std {
 
 GyroscopeSensorData::GyroscopeSensorData():SensorData() {
-	// TODO Auto-generated constructor stub
 
 }
 
 GyroscopeSensorData::~GyroscopeSensorData() {
-	// TODO Auto-generated destructor stub
 }
 
 

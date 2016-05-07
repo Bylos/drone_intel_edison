@@ -221,9 +221,12 @@ AttitudeData ahrs_Quaternion2Euler(void) {
 	return angles;
 }
 
+void beta_init(void) {
+	beta = BETA_MAX;
+}
+
 int ahrs_init(InertialData data, ahrs_filter_t filter) {
 	float beta_rate = 10.0f*AHRS_INIT_UPDATE_PERIOD;
-
 	AccelerometerSensorData accel = data.GetAccelerometer();
 	GyroscopeSensorData gyro = data.GetGyroscope();
 	MagnetometerSensorData magn = data.GetMagnetometer();

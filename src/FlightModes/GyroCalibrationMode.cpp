@@ -17,7 +17,6 @@ GyroCalibrationMode::GyroCalibrationMode(McuInterface *mcu_int): FlightMode(mcu_
 }
 
 GyroCalibrationMode::~GyroCalibrationMode() {
-	// TODO Auto-generated destructor stub
 }
 
 void GyroCalibrationMode::init() {
@@ -46,7 +45,7 @@ int GyroCalibrationMode::RunMode() {
 	mcu_interface->SetGyroCalib(gCalib);
 
 	while(!quit) {
-		nanosleep((const struct timespec[]){{0, 1000000L}}, NULL); //Free the CPU for 1ms
+		nanosleep((const struct timespec[]){{0, 100000L}}, NULL); //Free the CPU for 1ms
 
 		//Update of time variables
 		currentTime = mcu_interface->TimeElapsed()/1000.0f;
@@ -86,14 +85,17 @@ int GyroCalibrationMode::RunMode() {
 
 	quit = 0;
 	GyroscopeSensorData gyroData ;
+	FILE* gyrolog = fopen("/etc/drone/log_gyro.csv", "w");
 	while(!quit) {
-		nanosleep((const struct timespec[]){{0, 100000000L}}, NULL);
+		nanosleep((const struct timespec[]){{0, 100000L}}, NULL);
 		if (mcu_interface->GetInertialDataFlag()) {
 			inertialData = mcu_interface->GetInertialData();
 			gyroData = inertialData.GetGyroscope();
-			cout << gyroData.GetX() << " " << gyroData.GetY() << " " << gyroData.GetZ() << endl;
+			//cout << gyroData.GetX() << " " << gyroData.GetY() << " " << gyroData.GetZ() << endl;
+			fprintf(gyrolog, "%08u; %+08.3f; %+08.3f; %08.3f\n", mcu_interface->TimeElapsed(), gyroData.GetX(), gyroData.GetY(), gyroData.GetZ());
 		}
 	}
+	fclose(gyrolog);
 	return 0;
 }
 

@@ -17,7 +17,6 @@ AccelCalibrationMode::AccelCalibrationMode(McuInterface *mcu_int): FlightMode(mc
 }
 
 AccelCalibrationMode::~AccelCalibrationMode() {
-	// TODO Auto-generated destructor stub
 }
 
 void AccelCalibrationMode::init() {
@@ -50,7 +49,7 @@ int AccelCalibrationMode::RunMode() {
 	mcu_interface->SetAccelCalib(aCalibb,aCalibs);
 
 	while(!quit) {
-		nanosleep((const struct timespec[]){{0, 1000000L}}, NULL); //Free the CPU for 1ms
+		nanosleep((const struct timespec[]){{0, 100000L}}, NULL); //Free the CPU for 1ms
 
 		//Update of time variables
 		currentTime = mcu_interface->TimeElapsed()/1000.0f;
@@ -87,16 +86,19 @@ int AccelCalibrationMode::RunMode() {
 	cout << aCalibb.x << " " << aCalibb.y << " " << aCalibb.z << endl;
 	cout << aCalibs.x << " " << aCalibs.y << " " << aCalibs.z << endl;
 
+	FILE* accellog = fopen("/etc/drone/log_accel.csv", "w");
 	quit = 0;
 	AccelerometerSensorData accelData ;
 	while(!quit) {
-		nanosleep((const struct timespec[]){{0, 100000000L}}, NULL);
+		nanosleep((const struct timespec[]){{0, 100000L}}, NULL);
 		if (mcu_interface->GetInertialDataFlag()) {
 			inertialData = mcu_interface->GetInertialData();
 			accelData = inertialData.GetAccelerometer();
-			cout << accelData.GetX() << " " << accelData.GetY() << " " << accelData.GetZ() << endl;
+			//cout << accelData.GetX() << " " << accelData.GetY() << " " << accelData.GetZ() << endl;
+			fprintf(accellog, "%08u; %+08.3f; %+08.3f; %08.3f\n", mcu_interface->TimeElapsed(), accelData.GetX(), accelData.GetY(), accelData.GetZ());
 		}
 	}
+	fclose(accellog);
 	return 0;
 }
 

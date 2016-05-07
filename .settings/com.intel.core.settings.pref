@@ -1,5 +1,5 @@
 #
-#Thu Apr 07 21:06:18 CEST 2016
-com.intel.core.target.selection="Korklos"
+#Sat May 07 11:13:04 CEST 2016
 com.intel.core.project.type.id="com.intel.iotdevkit.cdt.iotCDTNature"
+com.intel.core.target.selection="Korklos Wifi Bylos Home"
 com.intel.core.project.description="IoT"

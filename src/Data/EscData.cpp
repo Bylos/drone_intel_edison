@@ -14,7 +14,6 @@ EscData::EscData() {
 }
 
 EscData::~EscData() {
-	// TODO Auto-generated destructor stub
 }
 
 void EscData::Set(float FrontLeft, float FrontRight, float RearRight, float RearLeft) {

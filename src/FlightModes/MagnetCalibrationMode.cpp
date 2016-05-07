@@ -17,7 +17,6 @@ MagnetCalibrationMode::MagnetCalibrationMode(McuInterface *mcu_int): FlightMode(
 }
 
 MagnetCalibrationMode::~MagnetCalibrationMode() {
-	// TODO Auto-generated destructor stub
 }
 
 void MagnetCalibrationMode::init() {
@@ -55,7 +54,7 @@ int MagnetCalibrationMode::RunMode() {
 	mcu_interface->SetMagnetoCalib(mCalibb,mCalibx,mCaliby,mCalibz);
 
 	while(!sampleComplete && sdeltat<maxDuration) {
-		nanosleep((const struct timespec[]){{0, 50000000L}}, NULL); //Free the CPU for 50ms
+		nanosleep((const struct timespec[]){{0, 100000L}}, NULL); //Free the CPU for 50ms
 
 		//Update of time variables
 		currentTime = mcu_interface->TimeElapsed()/1000.0f;

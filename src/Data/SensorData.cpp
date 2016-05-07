@@ -16,7 +16,6 @@ SensorData::SensorData() {
 }
 
 SensorData::~SensorData() {
-	// TODO Auto-generated destructor stub
 }
 
 void SensorData::Set(float X, float Y, float Z) {

@@ -16,7 +16,6 @@ AttitudeData::AttitudeData() {
 }
 
 AttitudeData::~AttitudeData() {
-	// TODO Auto-generated destructor stub
 }
 
 void AttitudeData::Set(float r, float p, float y) {

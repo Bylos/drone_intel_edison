@@ -10,12 +10,10 @@
 namespace std {
 
 FlightData::FlightData() {
-	// TODO Auto-generated constructor stub
 
 }
 
 FlightData::~FlightData() {
-	// TODO Auto-generated destructor stub
 }
 
 } /* namespace std */

@@ -95,7 +95,6 @@ McuInterface* FlightMode::getMcuInterface() {
 }
 
 void FlightMode::init() {
-	// TODO common init for all modes
 
 
 }

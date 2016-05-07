@@ -13,7 +13,6 @@ AccelerometerSensorData::AccelerometerSensorData():SensorData() {
 }
 
 AccelerometerSensorData::~AccelerometerSensorData() {
-	// TODO Auto-generated destructor stub
 }
 
 
